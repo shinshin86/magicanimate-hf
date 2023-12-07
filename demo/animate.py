@@ -146,10 +146,13 @@ class MagicAnimate():
                 """
                 control = np.array(control)
             
-            with Image.open(source_image) as f:
-                source_img_width, source_img_height = img.size
+
+            img = Image.fromarray(source_image)
+            source_img_width, source_img_height = img.size
+
             if source_img_width != width or source_img_height != height:
-                source_image = np.array(Image.fromarray(source_image).resize((width, height)))
+                new_width, new_height = int(width), int(height)
+                source_image = np.array(Image.fromarray(source_image).resize((new_width, new_height)))
             H, W, C = source_image.shape
             
             init_latents = None
