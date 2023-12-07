@@ -14,6 +14,7 @@ import numpy as np
 import gradio as gr
 from PIL import Image
 from subprocess import PIPE, run
+import cv2
 
 from demo.animate import MagicAnimate
 
@@ -25,8 +26,16 @@ snapshot_download(repo_id="zcxu-eric/MagicAnimate", local_dir="./MagicAnimate")
 
 animator = MagicAnimate()
 
+video_width = 512
+video_height = 512
+
 def animate(reference_image, motion_sequence_state, seed, steps, guidance_scale):
-    return animator(reference_image, motion_sequence_state, seed, steps, guidance_scale)
+    cap = cv2.VideoCapture(motion_sequence_state)
+    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    cap.release()
+
+    return animator(reference_image, motion_sequence_state, seed, steps, guidance_scale, width, height)
 
 with gr.Blocks() as demo:
 
@@ -56,15 +65,20 @@ with gr.Blocks() as demo:
             guidance_scale      = gr.Textbox(label="Guidance scale", value=7.5, info="default: 7.5")
             submit              = gr.Button("Animate")
 
-    def read_video(video, size=512):
-        size = int(size)
+    def read_video(video):
+        # set video width and height(global variables)
+        cap = cv2.VideoCapture(video)
+        video_width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+        video_height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        cap.release()
+
         reader = imageio.get_reader(video)
         fps = reader.get_meta_data()['fps']
         assert fps == 25.0, f'Expected video fps: 25, but {fps} fps found'
         return video
     
     def read_image(image, size=512):
-        return np.array(Image.fromarray(image).resize((size, size)))
+        return np.array(Image.fromarray(image).resize((video_width, video_height)))
     
     # when user uploads a new video
     motion_sequence.upload(

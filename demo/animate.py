@@ -125,7 +125,7 @@ class MagicAnimate():
         
         print("Initialization Done!")
         
-    def __call__(self, source_image, motion_sequence, random_seed, step, guidance_scale, size=512):
+    def __call__(self, source_image, motion_sequence, random_seed, step, guidance_scale, width=512, height=512):
             prompt = n_prompt = ""
             random_seed = int(random_seed)
             step = int(step)
@@ -140,12 +140,16 @@ class MagicAnimate():
 
             if motion_sequence.endswith('.mp4'):
                 control = VideoReader(motion_sequence).read()
+                """
                 if control[0].shape[0] != size:
                     control = [np.array(Image.fromarray(c).resize((size, size))) for c in control]
+                """
                 control = np.array(control)
             
-            if source_image.shape[0] != size:
-                source_image = np.array(Image.fromarray(source_image).resize((size, size)))
+            with Image.open(source_image) as f:
+                source_img_width, source_img_height = img.size
+            if source_img_width != width or source_img_height != height:
+                source_image = np.array(Image.fromarray(source_image).resize((width, height)))
             H, W, C = source_image.shape
             
             init_latents = None
