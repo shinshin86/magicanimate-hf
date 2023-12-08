@@ -30,7 +30,7 @@ from magicanimate.models.controlnet import ControlNetModel
 from magicanimate.models.appearance_encoder import AppearanceEncoderModel
 from magicanimate.models.mutual_self_attention import ReferenceAttentionControl
 from magicanimate.pipelines.pipeline_animation import AnimationPipeline
-from magicanimate.utils.util import save_videos_grid
+from magicanimate.utils.util import save_videos_grid, save_video
 from accelerate.utils import set_seed
 
 from magicanimate.utils.videoreader import VideoReader
@@ -193,10 +193,15 @@ class MagicAnimate():
 
             time_str = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
             savedir = f"demo/outputs"
-            animation_path = f"{savedir}/{time_str}.mp4"
+            animation_path = f"{savedir}/{time_str}_grid.mp4"
 
             os.makedirs(savedir, exist_ok=True)
             save_videos_grid(samples_per_video, animation_path)
+
+            # save output video only
+            selected_video = samples_per_video[-1]
+            selected_video_path = f"{savedir}/{time_str}_output.mp4"
+            save_video(selected_video, selected_video_path)
             
             return animation_path
             

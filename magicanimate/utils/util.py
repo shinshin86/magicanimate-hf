@@ -32,6 +32,25 @@ def save_videos_grid(videos: torch.Tensor, path: str, rescale=False, n_rows=6, f
     os.makedirs(os.path.dirname(path), exist_ok=True)
     imageio.mimsave(path, outputs, fps=fps)
 
+
+def save_video(video_tensor: torch.Tensor, path: str, fps=25):
+    video_tensor = video_tensor.permute(1, 0, 2, 3)
+
+    frames = []
+    for x in video_tensor:
+        x = x.transpose(0, 1).transpose(1, 2)
+
+        if x.min() < 0:
+            x = (x + 1.0) / 2.0
+        x = x.clamp(0, 1)
+
+        x = (x * 255).numpy().astype(np.uint8)
+        frames.append(x)
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    imageio.mimsave(path, frames, fps=fps)
+
+
 def save_images_grid(images: torch.Tensor, path: str):
     assert images.shape[2] == 1 # no time dimension
     images = images.squeeze(2)
