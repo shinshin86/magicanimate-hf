@@ -193,15 +193,15 @@ class MagicAnimate():
 
             time_str = datetime.datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
             savedir = f"demo/outputs"
-            animation_path = f"{savedir}/{time_str}_grid.mp4"
+            grid_animation_path = f"{savedir}/{time_str}_grid.mp4"
 
             os.makedirs(savedir, exist_ok=True)
-            save_videos_grid(samples_per_video, animation_path)
+            save_videos_grid(samples_per_video, grid_animation_path)
 
             # save output video only
-            selected_video = samples_per_video[-1]
-            selected_video_path = f"{savedir}/{time_str}_output.mp4"
-            save_video(selected_video, selected_video_path)
+            output_video = samples_per_video[-1]
+            output_video_path = f"{savedir}/{time_str}_output.mp4"
+            save_video(output_video, output_video_path)
             
-            return animation_path
+            return grid_animation_path, output_video_path
             

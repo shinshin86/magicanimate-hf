@@ -53,7 +53,9 @@ with gr.Blocks() as demo:
         </h2>
         </div>
         """)
-    animation = gr.Video(format="mp4", label="Animation Results", autoplay=True)
+    with gr.Row():
+        grid_animation = gr.Video(format="mp4", label="Grid Animation Results", autoplay=True)
+        output_animation = gr.Video(format="mp4", label="Output Animation Results", autoplay=True)
     
     with gr.Row():
         reference_image  = gr.Image(label="Reference Image")
@@ -96,7 +98,7 @@ with gr.Blocks() as demo:
     submit.click(
         animate,
         [reference_image, motion_sequence, random_seed, sampling_steps, guidance_scale], 
-        animation
+        [grid_animation, output_animation]
     )
 
     # Examples
@@ -111,7 +113,7 @@ with gr.Blocks() as demo:
             ["inputs/applications/source_image/multi1_source.png", "inputs/applications/driving/densepose/multi_dancing.mp4"],
         ],
         inputs=[reference_image, motion_sequence],
-        outputs=animation
+        outputs=animator,
     )
 
 
