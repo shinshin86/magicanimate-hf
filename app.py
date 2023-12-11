@@ -53,8 +53,9 @@ with gr.Blocks() as demo:
         </h2>
         </div>
         """)
-    grid_animation = gr.Video(format="mp4", label="Grid Animation Results", autoplay=True)
-    output_animation = gr.Video(format="mp4", label="Output Animation Results", autoplay=True)
+    with gr.Row():
+        grid_animation = gr.Video(format="mp4", label="Grid Animation Results", autoplay=True)
+        output_animation = gr.Video(format="mp4", label="Output Animation Results", autoplay=True)
     
     with gr.Row():
         reference_image  = gr.Image(label="Reference Image")
